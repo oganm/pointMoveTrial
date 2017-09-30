@@ -15,10 +15,13 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(# verbatimTextOutput("click_info"),
                  # verbatimTextOutput("brush_info"),
-                 verbatimTextOutput("pickedPoints")),
+        verbatimTextOutput("pickedPoints"),
+        sliderInput("plotZoom",label = 'Zoom',min = 0,max= 5,value = 3,step = 1)
+        ),
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("plot",click = "plot_click")
+        htmlOutput('htmlPlot')
+      # plotOutput("plot",click = "plot_click")
     )
   )
 ))

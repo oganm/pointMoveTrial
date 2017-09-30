@@ -7,8 +7,18 @@ library(stringr)
 library(highlight)
 
 
+setHeight = function(x){
+    input$plotZoom*5
+}
+
  # https://groups.google.com/forum/#!topic/shinyapps-users/0czcsM4vziM
 print('starting')
+gridSize = 100
+plotSize = c(x = gridSize*8, y = gridSize*8)
+defaultSquareSize = 20
+defaultIconColor = 'black'
+pickedIconColor = 'red'
+
 
 dir.create('~/.fonts') 
 file.copy('game-icons.ttf','~/.fonts/')
@@ -30,7 +40,7 @@ print('fonts css parsed')
 # iconsToUse = c(archer = intToUtf8(fa_df$char_int[fa_df$codes == 'gi-bowman']),
 #                swordman = intToUtf8(fa_df$char_int[fa_df$codes == 'gi-swordman']))
 
-iconsToUse = c(archer = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-bowman']),
+iconsToUse = list(archer = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-bowman']),
                swordwoman = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-swordwoman']),
                swordman = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-swordman']),
                pikeman = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-pikeman']),
@@ -50,6 +60,27 @@ iconsToUse = c(archer = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-bowma
                minotaur = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-minotaur']),
                spectre = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-sprectre']),
                demon = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-daemon-skull']),
-               golem = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-robot-golem']))
+               golem = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-robot-golem']),
+               pawn = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-pawn']),
+               kingChess = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-king']),
+               knightChess = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-knight']),
+               queen = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-queen']),
+               bishop = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-bishop']),
+               rook = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-chess-rook']),
+               chessboard = intToUtf8(fa_df$char_int[fa_df$codes == 'game-icon-empty-chessboard']))
+
+cols = colors()
+names(cols) = colors()
 
 
+coordinateConvert = function(x){
+    x*gridSize - gridSize/2
+}
+
+addAlpha <- function(col, alpha=1){
+    if(missing(col))
+        stop("Please provide a vector of colours.")
+    apply(sapply(col, col2rgb)/255, 2, 
+          function(x) 
+              rgb(x[1], x[2], x[3], alpha=alpha))  
+}
